@@ -10,6 +10,7 @@ gcloud auth configure-docker
 docker pull ${IMAGE_NAME} || exit 0
 
 docker build \
+  --cache-from=${IMAGE_NAME} \
   -t ${IMAGE_NAME} \
   -t ${IMAGE_NAME}:${IMAGE_TAG} \
   .
