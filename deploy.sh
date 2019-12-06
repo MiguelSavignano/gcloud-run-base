@@ -7,6 +7,8 @@ IMAGE_NAME=gcr.io/docker-rails-258302/cloud-run-base
 
 gcloud auth configure-docker
 
+docker pull ${IMAGE_NAME} || exit 0
+
 docker build \
   -t ${IMAGE_NAME} \
   -t ${IMAGE_NAME}:${IMAGE_TAG} \
