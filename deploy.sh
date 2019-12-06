@@ -18,8 +18,8 @@ docker build \
 docker push ${IMAGE_NAME}
 docker push ${IMAGE_NAME}:${IMAGE_TAG}
 
-# gcloud run deploy \
-#   ${SERVICE_NAME} \
-#   --image ${IMAGE_NAME}:${IMAGE_TAG} \
-#   --platform managed \
-#   --region ${GCP_ZONE}
+gcloud run deploy \
+  ${SERVICE_NAME} \
+  --image ${IMAGE_NAME}:${IMAGE_TAG} \
+  --platform managed \
+  --region ${GCP_ZONE}
