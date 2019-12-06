@@ -1,4 +1,4 @@
-name: gcloud function
+name: deploy cloud run service
 
 on:
   push:
