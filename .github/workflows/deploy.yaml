@@ -12,7 +12,17 @@ jobs:
       - uses: actions/checkout@v1
       - uses: GoogleCloudPlatform/github-actions/setup-gcloud@master
         with:
-          version: "271.0.0"
+          version: "273.0.0"
           # service_account_email: ${{ secrets.GCP_SA_EMAIL }}
           service_account_key: ${{ secrets.GCP_SA_KEY }}
-      - run: ./deploy.sh
+      - run: gcloud auth configure-docker
+      - uses: devmasx/cached-docker-build-push@v0.1.1
+        with:
+          image_name: gcr.io/docker-rails-258302/cloud-run-base
+      - run: |
+          gcloud run deploy cloud-run-base \
+            --project docker-rails-258302 \
+            --image gcr.io/docker-rails-258302/cloud-run-base \
+            --platform managed \
+            --region us-central1
+      
