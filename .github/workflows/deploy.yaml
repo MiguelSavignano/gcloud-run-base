@@ -1,28 +1,34 @@
-name: deploy cloud run service
-
+name: Deploy cloud run service
 on:
   push:
     branches:
       - "master"
+env:
+  PROJECT_ID: ${{secrets.PROJECT_ID}}
+  RUN_REGION: us-central1
+  SERVICE_NAME: cloud-run-base
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v1
-      - uses: GoogleCloudPlatform/github-actions/setup-gcloud@master
+      - uses: google-github-actions/setup-gcloud@master
         with:
-          version: "273.0.0"
-          # service_account_email: ${{ secrets.GCP_SA_EMAIL }}
+          project_id: $PROJECT_ID
           service_account_key: ${{ secrets.GCP_SA_KEY }}
       - run: gcloud auth configure-docker
       - uses: devmasx/cached-docker-build-push@v0.1.1
         with:
-          image_name: gcr.io/docker-rails-258302/cloud-run-base
+          image_name: gcr.io/$PROJECT_ID/$SERVICE_NAME
+          build_params: --build-arg=NPM_TOKEN=${{secrets.NPM_TOKEN}}
       - run: |
-          gcloud run deploy cloud-run-base \
-            --project docker-rails-258302 \
-            --image gcr.io/docker-rails-258302/cloud-run-base \
+          gcloud run deploy $SERVICE_NAME \
+            --project $PROJECT_ID \
+            --image "gcr.io/$PROJECT_ID/$SERVICE_NAME \
             --platform managed \
-            --region us-central1
-      
+            --region $RUN_REGION \
+            --set-env-vars=NODE_ENV=production
+
+
+#  --vpc-connector projects/$PROJECT_ID/locations/$RUN_REGION/connectors/$redis--SERVICE_NAME \
